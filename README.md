@@ -36,11 +36,22 @@
 
 词典数据库不会提交到 Git；构建时从 ECDICT `1.0.28` 发行版下载。
 
-### 手动验证（无 Manggo UI 时）
+### 手动验证
 
 ```bash
 bun test
+bun ./scripts/verify-real-db.mjs   # 需要先运行 package 脚本下载 stardict.db
 ```
+
+在已安装 Manggo 的 Windows 上，可用官方插件 runner 做联调：
+
+```powershell
+.\package.ps1
+.\scripts\verify-manggo-runner.ps1
+bun ./scripts/register-manggo-provider.mjs   # 可选：写入翻译服务实例
+```
+
+然后重启 Manggo，在翻译服务中确认 **ECDICT** 可用。
 
 ## 致谢
 
