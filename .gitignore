@@ -1,0 +1,8 @@
+dist/
+.tmp/
+ecdict-sqlite-*.zip
+stardict.db
+Database/
+*.mplugin
+.DS_Store
+Thumbs.db

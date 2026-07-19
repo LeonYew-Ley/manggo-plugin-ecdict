@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip unzip jq
+
+      - name: Read plugin id
+        id: meta
+        run: |
+          echo "id=$(jq -r '.id' manggo.plugin.json)" >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r '.version' manggo.plugin.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Download ECDICT database
+        run: |
+          mkdir -p .tmp
+          curl -L --fail -o .tmp/ecdict-sqlite-28.zip \
+            https://github.com/skywind3000/ECDICT/releases/download/1.0.28/ecdict-sqlite-28.zip
+          unzip -o .tmp/ecdict-sqlite-28.zip -d .tmp
+          if [[ ! -f .tmp/stardict.db ]]; then
+            FOUND="$(find .tmp -name 'stardict.db' -type f | head -n 1)"
+            test -n "$FOUND"
+            cp "$FOUND" .tmp/stardict.db
+          fi
+
+      - name: Package .mplugin
+        run: |
+          mkdir -p dist
+          cp .tmp/stardict.db stardict.db
+          zip -r "dist/${{ steps.meta.outputs.id }}.mplugin" \
+            manggo.plugin.json main.js icon.png stardict.db
+          rm -f stardict.db
+          ls -lh dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.id }}.mplugin
+          path: dist/*.mplugin
+          if-no-files-found: error
+
+      - name: Upload release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.mplugin
+          generate_release_notes: true

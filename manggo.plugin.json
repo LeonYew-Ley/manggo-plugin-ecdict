@@ -1,0 +1,34 @@
+{
+  "manifestVersion": 1,
+  "id": "com.leonyew.ecdict",
+  "name": "ECDICT Offline Dictionary",
+  "version": "1.0.0",
+  "description": "Offline English-Chinese dictionary for Manggo, based on ECDICT.",
+  "author": "LeonYew-Ley",
+  "homepage": "https://github.com/LeonYew-Ley/manggo-plugin-ecdict",
+  "icon": "icon.png",
+  "permissions": [],
+  "runtime": {
+    "kind": "bun",
+    "api": "manggo.plugin.v1",
+    "main": "main.js"
+  },
+  "services": [
+    {
+      "id": "dictionary",
+      "providerId": "com.leonyew.ecdict.dictionary",
+      "kind": "translation",
+      "displayName": "ECDICT",
+      "entry": "translate",
+      "main": "main.js",
+      "resultType": "dictionary",
+      "icon": "icon.png",
+      "language": {
+        "auto": "auto",
+        "en_US": "en",
+        "zh_CN": "zh"
+      },
+      "config": []
+    }
+  ]
+}
