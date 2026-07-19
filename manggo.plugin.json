@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
   "id": "com.leonyew.ecdict",
-  "name": "ECDICT Offline Dictionary",
+  "name": "ECDICT 离线英汉词典",
   "version": "1.0.0",
-  "description": "Offline English-Chinese dictionary for Manggo, based on ECDICT.",
+  "description": "基于 ECDICT 的 Manggo 离线英汉词典插件。",
   "author": "LeonYew-Ley",
   "homepage": "https://github.com/LeonYew-Ley/manggo-plugin-ecdict",
   "icon": "icon.png",

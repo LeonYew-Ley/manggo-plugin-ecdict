@@ -1,6 +1,14 @@
 # Manggo ECDICT 离线英汉词典插件
 
-基于 [ECDICT](https://github.com/skywind3000/ECDICT) 的 Manggo 原生离线词典插件。查词逻辑参考 [pot-app-translate-plugin-ecdict](https://github.com/pot-app/pot-app-translate-plugin-ecdict)，适配 Manggo `manggo.plugin.v1` 结构化词典格式。
+基于 [ECDICT](https://github.com/skywind3000/ECDICT) 的 [Manggo](https://github.com/Pylogmon/manggo-plugin) 原生离线英汉词典插件。
+
+查词逻辑参考 [pot-app-translate-plugin-ecdict](https://github.com/pot-app/pot-app-translate-plugin-ecdict)，已适配 Manggo `manggo.plugin.v1` 结构化词典格式，无需联网即可查词。
+
+## 功能
+
+- 离线英汉查词（ECDICT `stardict.db`）
+- 返回音标、词性释义、词形变化、词表标签等结构化结果
+- 不申请 `network` 权限，纯本地查询
 
 ## 安装
 
@@ -12,7 +20,7 @@
 
 ## 本地打包
 
-需要能访问 GitHub 以下载 ECDICT SQLite 发行包。
+需要能访问 GitHub，以下载 ECDICT 的 SQLite 发行包。
 
 ```powershell
 # Windows
@@ -59,6 +67,6 @@ bun ./scripts/register-manggo-provider.mjs   # 可选：写入翻译服务实例
 - Pot 插件实现参考：[pot-app/pot-app-translate-plugin-ecdict](https://github.com/pot-app/pot-app-translate-plugin-ecdict)
 - Manggo 插件格式：[Pylogmon/manggo-plugin](https://github.com/Pylogmon/manggo-plugin)
 
-## License
+## 许可证
 
 本仓库代码以 MIT 许可发布。ECDICT 数据请遵循其上游许可证。
