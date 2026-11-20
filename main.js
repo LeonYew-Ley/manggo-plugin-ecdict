@@ -1,5 +1,4 @@
-import { Database } from "bun:sqlite";
-import { join } from "node:path";
+const LOOKUP_WORD = "SELECT word, phonetic, translation, tag, exchange FROM stardict WHERE word = ? LIMIT 1";
 
 const EXCHANGE_TYPES = {
   p: "past",
@@ -133,28 +132,24 @@ function rowToDictionary(word, row) {
   };
 }
 
-function openDatabase(pluginDir) {
-  const dbPath = join(pluginDir, "stardict.db");
+async function openDatabase(manggo) {
   try {
-    return new Database(dbPath, { readonly: true });
+    return await manggo.sqlite.open("stardict.db", { mode: "readOnly" });
   } catch (error) {
-    throw new Error(`无法打开词典数据库: ${dbPath}. ${error?.message || error}`);
+    throw new Error(`无法打开词典数据库 stardict.db。${error?.message || error}`);
   }
 }
 
-function lookupWord(db, word) {
-  const exact = db
-    .query("SELECT word, phonetic, translation, tag, exchange FROM stardict WHERE word = ? LIMIT 1")
-    .get(word);
+async function lookupWord(db, word) {
+  const [exact] = await db.query(LOOKUP_WORD, [word]);
   if (exact) {
     return exact;
   }
 
   const lower = word.toLowerCase();
   if (lower !== word) {
-    return db
-      .query("SELECT word, phonetic, translation, tag, exchange FROM stardict WHERE word = ? LIMIT 1")
-      .get(lower);
+    const [row] = await db.query(LOOKUP_WORD, [lower]);
+    return row;
   }
 
   return null;
@@ -164,25 +159,20 @@ export function mapRowToResult(query, row) {
   return rowToDictionary(stringValue(row.word) || query, row);
 }
 
-export async function translate(text, _from, _to, options) {
+export async function translate(text, _from, _to, { manggo }) {
   const word = normalizeQuery(text);
   if (!word) {
     throw new Error("查询词不能为空。");
   }
 
-  const pluginDir = options?.utils?.pluginDir;
-  if (!pluginDir) {
-    throw new Error("运行时未提供 pluginDir，无法定位词典数据库。");
-  }
-
-  const db = openDatabase(pluginDir);
+  const db = await openDatabase(manggo);
   try {
-    const row = lookupWord(db, word);
+    const row = await lookupWord(db, word);
     if (!row) {
       throw new Error(`未找到词条: ${word}`);
     }
     return mapRowToResult(word, row);
   } finally {
-    db.close();
+    await db.close();
   }
 }

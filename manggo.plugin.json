@@ -2,14 +2,17 @@
   "manifestVersion": 1,
   "id": "com.leonyew.ecdict",
   "name": "ECDICT 离线英汉词典",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "基于 ECDICT 的 Manggo 离线英汉词典插件。",
   "author": "LeonYew-Ley",
   "homepage": "https://github.com/LeonYew-Ley/manggo-plugin-ecdict",
   "icon": "icon.png",
   "permissions": [],
+  "requires": {
+    "capabilities": ["sqlite"]
+  },
   "runtime": {
-    "kind": "bun",
+    "kind": "moejs",
     "api": "manggo.plugin.v1",
     "main": "main.js"
   },

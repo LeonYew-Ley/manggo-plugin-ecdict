@@ -4,6 +4,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { mapRowToResult, translate } from "./main.js";
+import { createSQLiteHost } from "./scripts/sqlite-test-host.mjs";
 
 describe("mapRowToResult", () => {
   test("maps ECDICT row into Manggo dictionary shape", () => {
@@ -33,7 +34,7 @@ describe("mapRowToResult", () => {
 });
 
 describe("translate with local sqlite", () => {
-  test("looks up word from pluginDir database", async () => {
+  test("looks up a word through the Manggo SQLite interface", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ecdict-"));
     const dbPath = join(dir, "stardict.db");
     const db = new Database(dbPath);
@@ -54,7 +55,7 @@ describe("translate with local sqlite", () => {
 
     try {
       const result = await translate("Hello", "en", "zh", {
-        utils: { pluginDir: dir },
+        manggo: createSQLiteHost(dir),
       });
       expect(result.dictionary.word).toBe("hello");
       expect(result.dictionary.meanings[0].translations).toContain("你好");
@@ -79,7 +80,7 @@ describe("translate with local sqlite", () => {
 
     try {
       await expect(
-        translate("zzzznotaword", "en", "zh", { utils: { pluginDir: dir } }),
+        translate("zzzznotaword", "en", "zh", { manggo: createSQLiteHost(dir) }),
       ).rejects.toThrow("未找到词条");
     } finally {
       rmSync(dir, { recursive: true, force: true });
