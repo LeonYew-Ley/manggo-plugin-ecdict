@@ -12,6 +12,8 @@
 
 ## 安装
 
+从 1.1.0 起，插件需要支持原生 SQLite 的 Manggo（1.3.7 或更新版本）。
+
 1. 从 [Releases](https://github.com/LeonYew-Ley/manggo-plugin-ecdict/releases) 下载 `.mplugin` 文件
 2. 打开 Manggo → 插件管理 → 安装插件
 3. 在翻译服务设置中添加 **ECDICT**
@@ -29,7 +31,7 @@
 
 ```bash
 # macOS / Linux
-./package.sh
+bash ./package.sh
 ```
 
 产物位于 `dist/com.leonyew.ecdict.mplugin`。
@@ -39,7 +41,7 @@
 | 文件 | 说明 |
 | --- | --- |
 | `manggo.plugin.json` | 插件清单，`resultType: "dictionary"` |
-| `main.js` | 使用 Bun `bun:sqlite` 查询 `stardict.db` |
+| `main.js` | 使用 Manggo 内置的 `manggo.sqlite` 只读查询 `stardict.db` |
 | `package.ps1` / `package.sh` | 下载词典库并打包 `.mplugin` |
 
 词典数据库不会提交到 Git；构建时从 ECDICT `1.0.28` 发行版下载。
@@ -51,15 +53,7 @@ bun test
 bun ./scripts/verify-real-db.mjs   # 需要先运行 package 脚本下载 stardict.db
 ```
 
-在已安装 Manggo 的 Windows 上，可用官方插件 runner 做联调：
-
-```powershell
-.\package.ps1
-.\scripts\verify-manggo-runner.ps1
-bun ./scripts/register-manggo-provider.mjs   # 可选：写入翻译服务实例
-```
-
-然后重启 Manggo，在翻译服务中确认 **ECDICT** 可用。
+在新版 Manggo 中安装生成的 `.mplugin`，到翻译服务设置添加 **ECDICT**，再用 `hello` 验证查词。Windows 的旧版 runner 与服务注册脚本适用于 1.0.0。
 
 ## 致谢
 
